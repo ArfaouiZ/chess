@@ -8,6 +8,7 @@ export class Bishop extends Piece{
     constructor(color: string,pos: number[]){
 
         super(pos);
+    
         this.color=color;
         this.logo= `../../assets/pieces/${color}/bishop.png`;
            

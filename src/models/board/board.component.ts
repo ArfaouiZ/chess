@@ -13,10 +13,39 @@ import { Square } from '../square/Square';
   styleUrls: ['./board.component.css']
 })
 export class BoardComponent {
-  board: any[][] = [];
+  board: Square[][] = [];
 
+  temp:any=null
   f(i: any,j: any){
     console.log(i,j)
+  }
+
+  g(i: any,j:any):void{
+    
+    
+    if(this.board[i][j].piece===false && this.temp===null)
+      console.log("empty square at ",i,j)
+
+    else if (this.board[i][j].piece!==false && this.temp===null){
+      this.temp=this.board[i][j]
+      
+      
+      
+    }
+    
+
+    else if(this.temp!==null ){
+      let [x,y]=this.temp.piece.getPosition()
+      
+      if (x!==i || y!==j){
+        
+        this.temp.piece.move([x,y],[i,j],this.board)
+        console.log("move made"," from ",x,y,"to : ",i,j)
+      }
+      this.temp=null
+    }
+
+    
   }
 
   constructor() {
@@ -35,7 +64,7 @@ export class BoardComponent {
       this.board[1][j] =new Square(new Pawn("black",[1,j]));}
     
       for(let j=0;j<8;j++){
-        this.board[6][j] =new Square(new Pawn("white",[1,j]));}
+        this.board[6][j] =new Square(new Pawn("white",[6,j]));}
       
       this.board[0][0]=new Square(new Rook("black",[0,0])) ;
       this.board[0][1]=new Square(new Knight("black",[0,1])) ;

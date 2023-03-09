@@ -13,9 +13,21 @@ export class Pawn extends Piece{
            
     }
 
+    getColor(): string {
+        return this.color
+    }
+
     isValidMove(s: number[]): boolean {
         
         return false;
+    }
+
+    showPossibleMoves(from: number):void{
+        let color: string=this.getColor();
+        switch(from){
+
+        }
+
     }
 
     
