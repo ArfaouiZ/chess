@@ -13,6 +13,10 @@ export class Rook extends Piece{
            
     }
 
+    getColor(): string{
+        return this.color
+    }
+
     isValidMove(s: number[]): boolean {
         
         return false;

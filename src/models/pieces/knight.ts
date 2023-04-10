@@ -13,6 +13,10 @@ export class Knight extends Piece{
            
     }
 
+    getColor(): string{
+        return this.color
+    }
+
     isValidMove(s: number[]): boolean {
         
         return false;

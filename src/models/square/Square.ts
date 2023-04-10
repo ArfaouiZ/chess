@@ -17,4 +17,8 @@ export class Square{
         else
             this.piece=false
     }
+
+    getPiece():any{
+        return this.piece
+    }
 }

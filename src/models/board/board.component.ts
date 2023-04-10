@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Piece } from '../piece/Piece';
 import { Bishop } from '../pieces/bishop';
 import { King } from '../pieces/king';
 import { Knight } from '../pieces/knight';
@@ -20,14 +21,15 @@ export class BoardComponent {
     console.log(i,j)
   }
 
-  g(i: any,j:any):void{
+  clickPiece(i:number,j:number):void{
     
     
-    if(this.board[i][j].piece===false && this.temp===null)
+    if(this.board[i][j].getPiece()===false && this.temp===null)
       console.log("empty square at ",i,j)
 
-    else if (this.board[i][j].piece!==false && this.temp===null){
-      this.temp=this.board[i][j]
+    else if (this.board[i][j].getPiece()!==false && this.temp===null){
+      this.temp=this.board[i][j].getPiece()
+      console.log("temp",this.temp)
       
       
       
@@ -35,17 +37,34 @@ export class BoardComponent {
     
 
     else if(this.temp!==null ){
-      let [x,y]=this.temp.piece.getPosition()
-      
-      if (x!==i || y!==j){
+      let [x,y]=this.temp.getPosition()
+      let color=false
+      if(this.board[i][j].getPiece())
+        color=this.board[i][j].getPiece().getColor()
         
-        this.temp.piece.move([x,y],[i,j],this.board)
+      if ((x!==i || y!==j) && color!==this.temp.getColor()){
+        
+        this.temp.move([x,y],[i,j],this.board)
         console.log("move made"," from ",x,y,"to : ",i,j)
       }
       this.temp=null
     }
 
     
+  }
+
+  showPossibleMoves(i:number,j:number):boolean{
+    if(this.temp!==null){
+      let piece=this.temp
+      let possiblemoves=piece.possibleMoves(this.board)
+      for (let move of possiblemoves)
+          if(move[0]==i && move[1]==j)
+            return true
+      }
+    return false
+    
+
+
   }
 
   constructor() {
