@@ -21,6 +21,11 @@ export class BoardComponent {
     console.log(i,j)
   }
 
+  inBoard(i:number,j:number): boolean{
+    if(i<8 && i>-1 && j<8 &&j>-1) return true
+    return false 
+  }
+
   clickPiece(i:number,j:number):void{
     
     
@@ -38,14 +43,12 @@ export class BoardComponent {
 
     else if(this.temp!==null ){
       let [x,y]=this.temp.getPosition()
-      let color=false
-      if(this.board[i][j].getPiece())
-        color=this.board[i][j].getPiece().getColor()
+      
         
-      if ((x!==i || y!==j) && color!==this.temp.getColor()){
+      if ((x!==i || y!==j)){
         
         this.temp.move([x,y],[i,j],this.board)
-        console.log("move made"," from ",x,y,"to : ",i,j)
+        
       }
       this.temp=null
     }
@@ -56,7 +59,7 @@ export class BoardComponent {
   showPossibleMoves(i:number,j:number):boolean{
     if(this.temp!==null){
       let piece=this.temp
-      let possiblemoves=piece.possibleMoves(this.board)
+      let possiblemoves=piece.possibleMoves(this.board,this.inBoard)
       for (let move of possiblemoves)
           if(move[0]==i && move[1]==j)
             return true

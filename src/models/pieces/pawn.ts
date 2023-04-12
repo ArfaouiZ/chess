@@ -24,37 +24,38 @@ export class Pawn extends Piece{
     normalmoves():void{}
     capturemoves():void{}
 
-    possibleMoves(board:Square[][]):number[][]{
+    possibleMoves(board:Square[][],inBoard:(x:number,y:number)=>boolean):number[][]{
         let color: string=this.color;
         let [x,y]=this.curPosition;
         const possiblemoves:number[][]= []
         if (color ==='black'){
-           if (y+1<8 && !board[x][y+1].getPiece())   
-                possiblemoves.push([x,y+1])
+            if (inBoard(x+1,y) && !board[x+1][y].getPiece())   
+            {possiblemoves.push([x+1,y])
 
-           if (y==1 && y+2<8 && !board[x][y+2].getPiece())
-                possiblemoves.push([x,y+2])
+            if (x==1  && !board[x+2][y].getPiece()&& !board[x+1][y].getPiece())
+            possiblemoves.push([x+2,y])}
 
-            if(y+1<8 && x+1<8 &&board[x+1][y+1].getPiece().getColor()==="white")
-                possiblemoves.push([x+1,y+1])
+            if(inBoard(x+1,y+1) && board[x+1][y+1].getPiece() && board[x+1][y+1].getPiece().getColor()==="white" ) 
+            possiblemoves.push([x+1,y+1])
 
-            if(y+1<8 && x-1<8 &&board[x-1][y+1].getPiece().getColor()==="white")
-                possiblemoves.push([x-1,y+1])
+            if(inBoard(x+1,y-1) && board[x+1][y-1].getPiece() && board[x+1][y-1].getPiece().getColor()==="white" )
+            possiblemoves.push([x+1,y-1]) 
         }
 
         else{
-            if (y-1>0 && !board[x][y-1].getPiece())   
-                possiblemoves.push([x,y-1])
+            if (inBoard(x-1,y) && !board[x-1][y].getPiece())   
+                possiblemoves.push([x-1,y])
 
-            if (y==6 && y-2<8 && !board[x][y-2].getPiece())
-                possiblemoves.push([x,y-2])
+            if (x==6  && !board[x-2][y].getPiece()&& !board[x-1][y].getPiece())
+                possiblemoves.push([x-2,y])
 
-            /* if(y-1<8 && x+1<8 && board[x+1][y-1].getPiece().getColor()==="black")
-                possiblemoves.push([x+1,y-1])
+            if(inBoard(x-1,y+1) && board[x-1][y+1].getPiece() && board[x-1][y+1].getPiece().getColor()==="black" ) 
+                possiblemoves.push([x-1,y+1])
 
-            if(y-1<8 && x-1<8 && board[x-1][y-1].getPiece().getColor()==="black")
-                possiblemoves.push([x-1,y-1]) */
+            if(inBoard(x-1,y-1) && board[x-1][y-1].getPiece() && board[x-1][y-1].getPiece().getColor()==="black" )
+                possiblemoves.push([x-1,y-1]) 
             }
+        console.log("possible moves",possiblemoves)
         return possiblemoves
 
     }

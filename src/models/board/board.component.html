@@ -11,9 +11,12 @@
         <div *ngIf="board[i][j].piece===false && showPossibleMoves(i,j)">
           
           <img class="possible-move"  src="https://assets.untappd.com/site/beer_logos_hd/beer-4817317_108bb_hd.jpeg"/>
+        
         </div>
         
-          <img *ngIf="board[i][j].piece" class="pieceLogo" [src]="board[i][j].piece.logo"/>
+          <div [ngClass]="{'capture-cell':showPossibleMoves(i,j)}">
+            <img *ngIf="board[i][j].piece" class="pieceLogo" [src]="board[i][j].piece.logo"/>
+          </div>
        
         
       </td>

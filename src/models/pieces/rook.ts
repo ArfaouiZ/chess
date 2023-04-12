@@ -22,5 +22,9 @@ export class Rook extends Piece{
         return false;
     }
 
+    possibleMoves(board:Square[][]):number[][]{
+        return []
+    }
+
     
 }

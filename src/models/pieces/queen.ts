@@ -22,5 +22,9 @@ export class Queen extends Piece{
         return false;
     }
 
+    possibleMoves(board:Square[][]):number[][]{
+        return []
+    }
+
     
 }
