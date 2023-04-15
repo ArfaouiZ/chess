@@ -1,6 +1,6 @@
-import { Square } from "../square/Square";
+import { Square } from "../../square/Square";
 
-function diagonalMove(board:Square[][],color:string,curPosition: number[]):number[][]{
+export function diagonalMove(board:Square[][],color:string,curPosition: number[]):number[][]{
     
     let [x,y]=curPosition;
     const possiblemoves:number[][]= []
@@ -52,4 +52,4 @@ function diagonalMove(board:Square[][],color:string,curPosition: number[]):numbe
     return possiblemoves
 }
 
-module.exports={diagonalMove}
+
