@@ -21,37 +21,44 @@ export class Pawn extends Piece{
         
         return false;
     }
-    normalmoves():void{}
-    capturemoves():void{}
-
+    
     possibleMoves(board:Square[][],inBoard:(x:number,y:number)=>boolean):number[][]{
         let color: string=this.color;
         let [x,y]=this.curPosition;
         const possiblemoves:number[][]= []
         if (color ==='black'){
+            //one square move
             if (inBoard(x+1,y) && !board[x+1][y].getPiece())   
             {possiblemoves.push([x+1,y])
-
+            
+            //two square move
             if (x==1  && !board[x+2][y].getPiece()&& !board[x+1][y].getPiece())
             possiblemoves.push([x+2,y])}
-
+            
+            //lower right diagonal capture
             if(inBoard(x+1,y+1) && board[x+1][y+1].getPiece() && board[x+1][y+1].getPiece().getColor()==="white" ) 
             possiblemoves.push([x+1,y+1])
-
+            
+            //lower left diagonal capture
             if(inBoard(x+1,y-1) && board[x+1][y-1].getPiece() && board[x+1][y-1].getPiece().getColor()==="white" )
             possiblemoves.push([x+1,y-1]) 
         }
 
         else{
+
+            //one square move
             if (inBoard(x-1,y) && !board[x-1][y].getPiece())   
                 possiblemoves.push([x-1,y])
-
+            
+            //two square move
             if (x==6  && !board[x-2][y].getPiece()&& !board[x-1][y].getPiece())
                 possiblemoves.push([x-2,y])
-
+            
+            //upper right diagonal capture
             if(inBoard(x-1,y+1) && board[x-1][y+1].getPiece() && board[x-1][y+1].getPiece().getColor()==="black" ) 
                 possiblemoves.push([x-1,y+1])
 
+            //upper left diagonal capture
             if(inBoard(x-1,y-1) && board[x-1][y-1].getPiece() && board[x-1][y-1].getPiece().getColor()==="black" )
                 possiblemoves.push([x-1,y-1]) 
             }
