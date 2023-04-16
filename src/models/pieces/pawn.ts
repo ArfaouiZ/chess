@@ -62,7 +62,7 @@ export class Pawn extends Piece{
             if(inBoard(x-1,y-1) && board[x-1][y-1].getPiece() && board[x-1][y-1].getPiece().getColor()==="black" )
                 possiblemoves.push([x-1,y-1]) 
             }
-        console.log("possible moves",possiblemoves)
+        
         return possiblemoves
 
     }

@@ -43,7 +43,7 @@ export class Knight extends Piece{
             
           }
         
-        console.log("possible moves",possiblemoves)
+       
         return possiblemoves
     }
 

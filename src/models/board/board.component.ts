@@ -15,10 +15,31 @@ import { Square } from '../square/Square';
 })
 export class BoardComponent {
   board: Square[][] = [];
+  savedMoves:any=[]
 
   temp:any=null
   f(i: any,j: any){
     console.log(i,j)
+  }
+
+  takeBack():void{
+    if(this.savedMoves.length){
+      let lastmove=this.savedMoves.pop()
+      const {from,to,type}=lastmove
+      this.board[from[0]][from[1]]=this.board[to[0]][to[1]]
+      this.board[from[0]][from[1]].piece.curPosition=[from[0],from[1]]
+
+      if(type.getPiece()){
+        type.piece.curPosition=[to[0],to[1]]
+        this.board[to[0]][to[1]]=type
+        
+      }
+        
+      else
+      this.board[to[0]][to[1]]=new Square()
+      console.log("take back")
+      
+    }
   }
 
   inBoard(i:number,j:number): boolean{
@@ -28,26 +49,19 @@ export class BoardComponent {
 
   clickPiece(i:number,j:number):void{
     
-    
-    if(this.board[i][j].getPiece()===false && this.temp===null)
-      console.log("empty square at ",i,j)
-
-    else if (this.board[i][j].getPiece()!==false && this.temp===null){
+    if (this.board[i][j].getPiece()!==false && this.temp===null)
       this.temp=this.board[i][j].getPiece()
-      console.log("temp",this.temp)
       
-      
-      
-    }
-    
-
     else if(this.temp!==null ){
       let [x,y]=this.temp.getPosition()
       
-        
       if ((x!==i || y!==j)){
-        
+        //save move
+        this.savedMoves.push({from:[x,y],to:[i,j],type:this.board[i][j]})
+
+        //move made
         this.temp.move([x,y],[i,j],this.board)
+        
         
       }
       this.temp=null
