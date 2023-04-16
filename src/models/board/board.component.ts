@@ -7,6 +7,7 @@ import { Pawn } from '../pieces/pawn';
 import { Queen } from '../pieces/queen';
 import { Rook } from '../pieces/rook';
 import { Square } from '../square/Square';
+import { Lastmove } from '../lastmove/lastmove';
 
 @Component({
   selector: 'board',
@@ -15,7 +16,11 @@ import { Square } from '../square/Square';
 })
 export class BoardComponent {
   board: Square[][] = [];
-  savedMoves:any=[]
+  savedMoves:any =[]
+
+  blackKingPosition:number[]=[0,4]
+  whiteKingPosition:number[]=[7,4]
+
 
   temp:any=null
   f(i: any,j: any){
@@ -29,6 +34,13 @@ export class BoardComponent {
       this.board[from[0]][from[1]]=this.board[to[0]][to[1]]
       this.board[from[0]][from[1]].piece.curPosition=[from[0],from[1]]
 
+      //restore kings position
+      if(this.temp  instanceof King && this.temp.getColor()==="white" ) 
+          this.whiteKingPosition=[from[0],from[1]]
+
+      if(this.temp  instanceof King && this.temp.getColor()==="black" ) 
+        this.blackKingPosition=[from[0],from[1]]
+
       if(type.getPiece()){
         type.piece.curPosition=[to[0],to[1]]
         this.board[to[0]][to[1]]=type
@@ -37,6 +49,9 @@ export class BoardComponent {
         
       else
       this.board[to[0]][to[1]]=new Square()
+      
+
+      
       console.log("take back")
       
     }
@@ -59,8 +74,16 @@ export class BoardComponent {
         //save move
         this.savedMoves.push({from:[x,y],to:[i,j],type:this.board[i][j]})
 
+        //check if the piece moved whether it's a king
+        if(this.temp  instanceof King && this.temp.getColor()==="white" ) 
+          this.whiteKingPosition=[i,j]
+
+        if(this.temp  instanceof King && this.temp.getColor()==="black" ) 
+          this.blackKingPosition=[i,j]
+
         //move made
         this.temp.move([x,y],[i,j],this.board)
+        
         
         
       }
