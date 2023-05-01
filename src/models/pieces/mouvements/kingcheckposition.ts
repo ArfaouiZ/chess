@@ -107,7 +107,7 @@ function UpDownLeftRightCheck (board:Square[][],color:string,kingPos:number[]):b
         if (board[x+i][y+j].getPiece() ) {
             if(board[x+i][y+j].getPiece().getColor()!==color) {
                 if (board[x+i][y+j].getPiece() instanceof Queen || board[x+i][y+j].getPiece() instanceof Rook) 
-                {console.log(board[x+i][y+j].getPiece(),'danger at ',x+i,y+j)
+                {//console.log(board[x+i][y+j].getPiece(),'danger at ',x+i,y+j)
                 return true} 
                 else {//console.log('no threat at ' ,x+i,y+j)
                 break }}

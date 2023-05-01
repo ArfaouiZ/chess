@@ -8,21 +8,24 @@ import { King } from "../king";
 import { UpDownLeftRightCheck, diagonalCheck } from "./kingcheckposition";
 
 function checkLegalMoves(board :Square[][],kingPosition:number[]):any{
-
+    //console.log(board)
     let [xk,yk]=kingPosition
+    //console.log(xk,yk)
+    //console.log(board[7][4])
     let kingInCheck=board[xk][yk].inCapture
     let king=board[xk][yk].getPiece()
     let color=king.getColor()
     
 
     let legalMoves:any =[]
-    
-    for(let i=0;i<8;i++)
-
+    let l:any
+    for(let i=0;i<8;i++){
+         
+        l=[]
         for(let j=0;j<8;j++){
             if(board[i][j].getPiece() && board[i][j].getPiece().getColor()===color){
 
-                let possibleMoves=board[i][j].getPiece().possibleMoves()
+                let possibleMoves=board[i][j].getPiece().possibleMoves(board,kingPosition)
                 
                 if (kingInCheck){
                     let p=[]
@@ -32,28 +35,34 @@ function checkLegalMoves(board :Square[][],kingPosition:number[]):any{
 
                      }
                     
-                    legalMoves[i][j]=p
+                    l.push(p)
                 }
 
                 else
-                    legalMoves[i][j]=possibleMoves
+                    l.push(possibleMoves)
 
             }
 
-            else if(board[i][j].getPiece()===false)
-                legalMoves[i][j]=[]
+            else l.push([])
 
 
         }
-
+        legalMoves.push(l)
+    }
+    
+    return legalMoves
  }
 
 
 function escapeCheck(board: Square[][],from: number[],to: number[],color:string,kingPosition:number[]): boolean{
     
+    
     let tempBoard=copyBoard(board)
     let [x,y]=from
-    tempBoard[x][y].move(from,to,tempBoard)
+    tempBoard[x][y].getPiece().move(from,to,tempBoard)
+
+    if (tempBoard[to[0]][to[1]].getPiece().getName()==='king') kingPosition=[to[0],to[1]]
+
     return diagonalCheck(tempBoard,color,kingPosition) || UpDownLeftRightCheck(tempBoard,color,kingPosition) 
 
 
@@ -62,6 +71,12 @@ function escapeCheck(board: Square[][],from: number[],to: number[],color:string,
 
 function copyBoard(board: Square[][]):any{
     let newBoard: Square[][] =[]
+    for (let i = 0; i < 8; i++) {
+        newBoard[i] = [];
+        for (let j = 0; j < 8; j++) {
+          newBoard[i][j] = new Square();
+        }
+      }
 
     for(let i=0;i<8;i++)
         for(let j=0;j<8;j++){

@@ -29,8 +29,7 @@ export class BoardComponent {
 
   blackKingPosition:number[]=[0,4]
   whiteKingPosition:number[]=[7,4]
-  PM :any =checkLegalMoves(this.board,whiteKingPosition)
-  
+  PM:any=[]
 
   turn:any="white"
 
@@ -106,15 +105,17 @@ export class BoardComponent {
   clickPiece(i:number,j:number):void{
 
     
-      console.log("square",this.board[i][j])
+      //console.log("square",this.board[i][j])
     if (this.board[i][j].getPiece()!==false && this.temp===null){
       
       this.temp=this.board[i][j].getPiece()
       let color=this.temp.getColor()
-      if (color==='white' )
+      /* if (color==='white' )
           this.tempPossibleMoves=this.temp.possibleMoves(this.board,this.whiteKingPosition)
       else 
-      this.tempPossibleMoves=this.temp.possibleMoves(this.board,this.blackKingPosition)
+      this.tempPossibleMoves=this.temp.possibleMoves(this.board,this.blackKingPosition) */
+      //console.log(this.PM)
+      this.tempPossibleMoves=this.PM[i][j]
 
       
       //possible moves and captures
@@ -169,6 +170,10 @@ export class BoardComponent {
            this.board[xb][yb].inCapture=blackcheck
    
         }
+        // test
+        
+        this.PM=checkLegalMoves(this.board,this.temp.getColor()==="white" ? this.blackKingPosition : this.whiteKingPosition)
+        console.log("PM",this.PM)
 
       
       }
@@ -186,6 +191,8 @@ export class BoardComponent {
 
   constructor() {
     this.createBoard();
+    this.PM =checkLegalMoves(this.board,this.whiteKingPosition)
+    console.log('First PM',this.PM)
   }
 
   createBoard() {
@@ -220,6 +227,9 @@ export class BoardComponent {
       this.board[7][6]=new Square(new Knight("white",[7,6])) ;
       this.board[7][7]=new Square(new Rook("white",[7,7])) ;
       
+
+      
       
   }
+    
 }

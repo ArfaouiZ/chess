@@ -97,22 +97,22 @@ export abstract class Piece {
       //console.log("xxxxxxxxxxx",x+i,x,xk,i)
       //console.log("ppppppppp",board[x+i][y+j])
 
-      console.log("test",xk+i,yk+j)
+      /* console.log("test",xk+i,yk+j) */
       if (board[xk+i][yk+j].getPiece()) {
 
         if(board[xk+i][yk+j].getPiece().getColor()!==color) {
             if (board[xk+i][yk+j].getPiece().getName()==="queen" || board[xk+i][yk+j].getPiece().getName()===type ){
-                console.log('danger at ',xk+i,yk+j)
+                //console.log('danger at ',xk+i,yk+j)
                  return {threat:true,at:[xk+i,yk+j]}
               } 
             else {
-                  console.log('no threat at ' ,xk+i,yk+j)
+                  // console.log('no threat at ' ,xk+i,yk+j)
                   break 
                 }
             }
         else {
           if(xk+i !== x || yk+j!==y){
-            console.log('no threat at ' ,xk+i,yk+j)
+            //console.log('no threat at ' ,xk+i,yk+j)
             break 
           }
           
