@@ -9,6 +9,8 @@ import { Rook } from "../pieces/rook"
 export class Square{
 
     piece:any
+    inCapture:boolean=false
+    possibleMove:boolean=false
      
     
     constructor(piece? :Piece){

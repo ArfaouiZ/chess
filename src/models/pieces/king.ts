@@ -1,16 +1,29 @@
 import { Piece } from "../piece/Piece";
 import { Square } from "../square/Square";
+import { UpDownLeftRightCheck, diagonalCheck } from "./mouvements/kingcheckposition";
+import { upDownLeftRight } from "./mouvements/updownleftright";
 
 export class King extends Piece{
     color: string;
-    logo: any;
+    logo: string;
+    name:string="king"
+    hasmoved:boolean=false
+
 
     constructor(color: string,pos: number[]){
 
         super(pos);
         this.color=color;
         this.logo= `../../assets/pieces/${color}/king.png`;
+        
            
+    }
+    hasMoved(){
+        return this.hasmoved
+    }
+
+    getName():string{
+        return this.name
     }
 
     getColor(): string{
@@ -22,17 +35,21 @@ export class King extends Piece{
         return false;
     }
 
-    possibleMoves(board:Square[][],inBoard:(x:number,y:number)=>boolean):number[][]{
+    possibleMoves(board:Square[][],kingPosition:number[]):number[][]{
         let color: string=this.color;
         let [x,y]=this.curPosition;
         const possiblemoves:number[][]= []
+        
         for(let i=-1 ;i<2;i++){
             for(let j=-1;j<2;j++){ 
-                if(inBoard(x+i,y+j)) {
-                    if( board[x+i][y+j].getPiece()===false)
-                        possiblemoves.push([x+i,y+j])
-                    else if ( board[x+i][y+j].getPiece().getColor()!==color)
-                        possiblemoves.push([x+i,y+j])
+                if(this.inBoard(x+i,y+j)) {
+                    if( board[x+i][y+j].getPiece()===false || board[x+i][y+j].getPiece().getColor()!==color ){
+                        let z=diagonalCheck(board,color,[x+i,y+j]) || UpDownLeftRightCheck(board,color,[x+i,y+j])
+                        if(!z)
+                            possiblemoves.push([x+i,y+j])
+                    
+                    }
+                    
             }
         }
         

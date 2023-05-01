@@ -53,3 +53,5 @@ export function diagonalMove(board:Square[][],color:string,curPosition: number[]
 }
 
 
+
+

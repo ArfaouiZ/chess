@@ -3,7 +3,8 @@ import { Square } from "../square/Square";
 
 export class Knight extends Piece{
     color: string;
-    logo: any;
+    logo: string;
+    name:string="knight"
 
     constructor(color: string,pos: number[]){
 
@@ -11,6 +12,11 @@ export class Knight extends Piece{
         this.color=color;
         this.logo= `../../assets/pieces/${color}/knight.png`;
            
+    }
+    
+
+    getName():string{
+        return this.name
     }
 
     getColor(): string{
@@ -22,7 +28,7 @@ export class Knight extends Piece{
         return false;
     }
 
-    possibleMoves(board:Square[][],inBoard:(x:number,y:number)=>boolean):number[][]{
+    possibleMoves(board:Square[][],kingPosition:number[]):number[][]{
         let color: string=this.color;
         let [x,y]=this.curPosition;
         const possiblemoves:number[][]= []
@@ -30,18 +36,20 @@ export class Knight extends Piece{
         let l=[-2,-1,1,2]
         for (let k of l){
             let [p1,p2]=[[x+k,y+3-Math.abs(k)],[x+k,y-3+Math.abs(k)]]
-            if(inBoard(p1[0],p1[1]) &&  board[p1[0]][p1[1]].getPiece()===false)
+            if(this.inBoard(p1[0],p1[1]) &&  board[p1[0]][p1[1]].getPiece()===false)
                 possiblemoves.push(p1)
-            else if(inBoard(p1[0],p1[1]) &&  board[p1[0]][p1[1]].getPiece() && board[p1[0]][p1[1]].getPiece().getColor()!==color)
+            else if(this.inBoard(p1[0],p1[1]) &&  board[p1[0]][p1[1]].getPiece() && board[p1[0]][p1[1]].getPiece().getColor()!==color)
                 possiblemoves.push(p1)
 
-            if(inBoard(p2[0],p2[1]) &&  board[p2[0]][p2[1]].getPiece()===false)
+            if(this.inBoard(p2[0],p2[1]) &&  board[p2[0]][p2[1]].getPiece()===false)
                 possiblemoves.push(p2)
-            else if(inBoard(p2[0],p2[1]) &&  board[p2[0]][p2[1]].getPiece() && board[p2[0]][p2[1]].getPiece().getColor()!==color)
+            else if(this.inBoard(p2[0],p2[1]) &&  board[p2[0]][p2[1]].getPiece() && board[p2[0]][p2[1]].getPiece().getColor()!==color)
                 possiblemoves.push(p2)
             
             
           }
+        let possibleCheck=this.isPinned(board,kingPosition,this.color)
+        if (possibleCheck) return []
         
        
         return possiblemoves

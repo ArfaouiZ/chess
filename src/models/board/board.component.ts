@@ -8,6 +8,12 @@ import { Queen } from '../pieces/queen';
 import { Rook } from '../pieces/rook';
 import { Square } from '../square/Square';
 import { Lastmove } from '../lastmove/lastmove';
+import { diagonalCheck } from '../pieces/mouvements/kingcheckposition';
+import { UpDownLeftRightCheck } from '../pieces/mouvements/kingcheckposition';
+import { checkLegalMoves } from '../pieces/mouvements/legalmoves';
+
+
+
 
 @Component({
   selector: 'board',
@@ -18,17 +24,27 @@ export class BoardComponent {
   board: Square[][] = [];
   savedMoves:any =[]
 
+  
+   
+
   blackKingPosition:number[]=[0,4]
   whiteKingPosition:number[]=[7,4]
+  PM :any =checkLegalMoves(this.board,whiteKingPosition)
+  
+
+  turn:any="white"
+
 
 
   temp:any=null
+  tempPossibleMoves:number[][]=[]
   f(i: any,j: any){
     console.log(i,j)
   }
 
   takeBack():void{
     if(this.savedMoves.length){
+      
       let lastmove=this.savedMoves.pop()
       const {from,to,type}=lastmove
       this.board[from[0]][from[1]]=this.board[to[0]][to[1]]
@@ -57,22 +73,61 @@ export class BoardComponent {
     }
   }
 
-  inBoard(i:number,j:number): boolean{
-    if(i<8 && i>-1 && j<8 &&j>-1) return true
-    return false 
+ 
+
+
+
+  showPossibleMoves(possiblemoves:number[][]):void{
+    
+    
+    //console.log("show possible moves",possiblemoves)
+    for(let move of possiblemoves){
+      let [a,b]=move
+      if(this.board[a][b].getPiece())
+        this.board[a][b].inCapture=true
+      else
+        this.board[a][b].possibleMove=true
+  }
   }
 
-  clickPiece(i:number,j:number):void{
+  cleanUp(possiblemoves:number[][]):void{
     
-    if (this.board[i][j].getPiece()!==false && this.temp===null)
-      this.temp=this.board[i][j].getPiece()
+    //console.log("claen possible moves",possiblemoves)
+    for(let move of possiblemoves){
+      let [a,b]=move
+      if(this.board[a][b].getPiece())
+        this.board[a][b].inCapture=false
+      else
+        this.board[a][b].possibleMove=false
+  }
+  }
+  
+
+  clickPiece(i:number,j:number):void{
+
+    
+      console.log("square",this.board[i][j])
+    if (this.board[i][j].getPiece()!==false && this.temp===null){
       
+      this.temp=this.board[i][j].getPiece()
+      let color=this.temp.getColor()
+      if (color==='white' )
+          this.tempPossibleMoves=this.temp.possibleMoves(this.board,this.whiteKingPosition)
+      else 
+      this.tempPossibleMoves=this.temp.possibleMoves(this.board,this.blackKingPosition)
+
+      
+      //possible moves and captures
+      
+      
+      this.showPossibleMoves(this.tempPossibleMoves)
+      
+    } 
     else if(this.temp!==null ){
       let [x,y]=this.temp.getPosition()
       
       if ((x!==i || y!==j)){
-        //save move
-        this.savedMoves.push({from:[x,y],to:[i,j],type:this.board[i][j]})
+        
 
         //check if the piece moved whether it's a king
         if(this.temp  instanceof King && this.temp.getColor()==="white" ) 
@@ -81,31 +136,53 @@ export class BoardComponent {
         if(this.temp  instanceof King && this.temp.getColor()==="black" ) 
           this.blackKingPosition=[i,j]
 
+
+        //cleanup
+        this.cleanUp(this.tempPossibleMoves)
+
+        //save move
+        this.savedMoves.push({from:[x,y],to:[i,j],type:this.board[i][j]})
+
         //move made
         this.temp.move([x,y],[i,j],this.board)
-        
-        
-        
+
+        if (this.temp.getColor()==='white') {
+           let blackcheck=diagonalCheck(this.board,'black',this.blackKingPosition)|| UpDownLeftRightCheck(this.board,'black',this.blackKingPosition)
+           
+           let whitecheck=diagonalCheck(this.board,'white',this.whiteKingPosition)|| UpDownLeftRightCheck(this.board,'white',this.whiteKingPosition)
+
+           let [xb,yb]=this.blackKingPosition
+           this.board[xb][yb].inCapture=blackcheck
+
+           let [xw,yw]=this.whiteKingPosition
+           this.board[xw][yw].inCapture=whitecheck
+      
+        }
+        else if (this.temp.getColor()==='black') {
+           let whitecheck=diagonalCheck(this.board,'white',this.whiteKingPosition)|| UpDownLeftRightCheck(this.board,'white',this.whiteKingPosition)
+           let blackcheck=diagonalCheck(this.board,'black',this.blackKingPosition)|| UpDownLeftRightCheck(this.board,'black',this.blackKingPosition)
+           
+           let [xw,yw]=this.whiteKingPosition
+           this.board[xw][yw].inCapture=whitecheck
+
+           let [xb,yb]=this.blackKingPosition
+           this.board[xb][yb].inCapture=blackcheck
+   
+        }
+
+      
       }
+       //remove possible moves and capture if clicked same piece twice
+      if(x===i && y===j)
+        this.cleanUp(this.tempPossibleMoves)
       this.temp=null
+      this.tempPossibleMoves=[]
     }
 
     
   }
 
-  showPossibleMoves(i:number,j:number):boolean{
-    if(this.temp!==null){
-      let piece=this.temp
-      let possiblemoves=piece.possibleMoves(this.board,this.inBoard)
-      for (let move of possiblemoves)
-          if(move[0]==i && move[1]==j)
-            return true
-      }
-    return false
-    
-
-
-  }
+  
 
   constructor() {
     this.createBoard();
