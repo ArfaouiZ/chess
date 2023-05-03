@@ -1,0 +1,33 @@
+<p>board works!</p>
+<table class="board">
+    <tr>
+      <td class="empty-cell"></td>
+      
+      <td class="empty-cell"></td>
+    </tr>
+    <tr *ngFor="let row of [8, 7, 6, 5, 4, 3, 2, 1]; let i = index">
+      <td class="row-label">{{ row }}</td>
+      <td class="cell" *ngFor="let col of ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h']; let j = index" [ngClass]="{ 'white-cell': (i+j) % 2 == 0, 'black-cell': (i+j) % 2 == 1 }" (click)="clickPiece(i,j)">
+        <div *ngIf="board[i][j].piece===false && board[i][j].possibleMove">
+          
+          <img class="possible-move"  src="https://assets.untappd.com/site/beer_logos_hd/beer-4817317_108bb_hd.jpeg"/>
+        
+        </div>
+        
+          <div [ngClass]="{'capture-cell':board[i][j].inCapture}">
+            <img *ngIf="board[i][j].piece" class="pieceLogo" [src]="board[i][j].piece.logo"/>
+          </div>
+       
+        
+      </td>
+      
+    </tr>
+    <tr>
+      <td class="empty-cell" ></td>
+      <td class="col-label" *ngFor="let col of ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h']" >{{ col }}</td>
+      <td class="empty-cell"></td>
+    </tr>
+    <button (click)="takeBack()">take back</button>
+  </table>
+  
+  

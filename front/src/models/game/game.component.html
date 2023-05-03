@@ -1,0 +1,16 @@
+<div class="user input" *ngIf="!user">
+    <h1>welcome to chess</h1>
+    <p>enter user name</p>
+    <input #userinput placeholder="Type user name...">
+    <button (click)="createUser(userinput)">Enter</button>
+    
+</div>
+
+<div *ngIf="user">
+    
+    <h1>user created</h1>
+    <h2>{{user}}</h2>
+    <board [player]="user"></board>
+</div>
+
+
