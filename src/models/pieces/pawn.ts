@@ -49,7 +49,8 @@ export class Pawn extends Piece{
             if(this.inBoard(x+1,y-1) && board[x+1][y-1].getPiece() && board[x+1][y-1].getPiece().getColor()==="white" )
             possiblemoves.push([x+1,y-1]) 
 
-            //en Passant 
+            //en Passant
+
             }
 
         else{

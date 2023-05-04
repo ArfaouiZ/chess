@@ -45,26 +45,51 @@ export class BoardComponent {
     if(this.savedMoves.length){
       
       let lastmove=this.savedMoves.pop()
-      const {from,to,type}=lastmove
+      const {from,to,capturedPiece,lastPM,whitecheck,blackcheck}=lastmove
+      
+      //restor moved piece position
       this.board[from[0]][from[1]]=this.board[to[0]][to[1]]
       this.board[from[0]][from[1]].piece.curPosition=[from[0],from[1]]
 
       //restore kings position
-      if(this.temp  instanceof King && this.temp.getColor()==="white" ) 
-          this.whiteKingPosition=[from[0],from[1]]
+      let movedPiece= this.board[from[0]][from[1]].getPiece()
+      let movedPieceName=movedPiece.getName()
+      let movedPieceColor=movedPiece.getColor()
 
-      if(this.temp  instanceof King && this.temp.getColor()==="black" ) 
+      console.log(movedPieceName,"name",movedPieceColor,"color")
+
+      if(movedPieceName==="king" && movedPieceColor==="white" ){
+          this.whiteKingPosition=[from[0],from[1]]
+          console.log("king position",this.whiteKingPosition)
+
+      }
+
+      else if(movedPieceName==="king" && movedPieceColor==="black" ) 
         this.blackKingPosition=[from[0],from[1]]
 
-      if(type.getPiece()){
-        type.piece.curPosition=[to[0],to[1]]
-        this.board[to[0]][to[1]]=type
+      //capture move
+      if(capturedPiece.getPiece()){
+        capturedPiece.piece.curPosition=[to[0],to[1]]
+        this.board[to[0]][to[1]]=capturedPiece
         
       }
-        
-      else
-      this.board[to[0]][to[1]]=new Square()
       
+      //normal move
+      else
+        this.board[to[0]][to[1]]=new Square()
+      
+      //rebuild PM
+      this.PM=lastPM
+      
+      //let blackcheck=diagonalCheck(this.board,'black',this.blackKingPosition)|| UpDownLeftRightCheck(this.board,'black',this.blackKingPosition)
+        
+      //let whitecheck=diagonalCheck(this.board,'white',this.whiteKingPosition)|| UpDownLeftRightCheck(this.board,'white',this.whiteKingPosition)
+
+      let [xb,yb]=this.blackKingPosition
+      this.board[xb][yb].inCapture=blackcheck
+
+      let [xw,yw]=this.whiteKingPosition ;
+      this.board[xw][yw].inCapture=whitecheck
 
       
       console.log("take back")
@@ -109,6 +134,8 @@ export class BoardComponent {
     if (this.board[i][j].getPiece()!==false && this.temp===null){
       
       this.temp=this.board[i][j].getPiece()
+      this.board[i][j].isSelected=true
+
       let color=this.temp.getColor()
       /* if (color==='white' )
           this.tempPossibleMoves=this.temp.possibleMoves(this.board,this.whiteKingPosition)
@@ -130,6 +157,33 @@ export class BoardComponent {
       if ((x!==i || y!==j)){
         
 
+        
+
+        //cleanup
+        this.cleanUp(this.tempPossibleMoves)
+
+        //save move
+        /* let lastMove:any ={}
+        lastMove.from=[x,y]
+        lastMove.to=[i,j]
+        lastMove.capturedPiece=this.board[i][j]
+        lastMove.lastPM=this.PM
+        lastMove.whitecheck=this.board[this.whiteKingPosition[0]][this.whiteKingPosition[1]].inCapture
+        lastMove.blackcheck=this.board[this.blackKingPosition[0]][this.blackKingPosition[1]].inCapture
+
+
+        this.savedMoves.push(lastMove) */
+
+        //save move
+
+        this.savedMoves.push({from:[x,y],to:[i,j],capturedPiece:this.board[i][j],lastPM:this.PM})
+        //save 
+        this.savedMoves[this.savedMoves.length-1].whitecheck=this.board[this.whiteKingPosition[0]][this.whiteKingPosition[1]].inCapture
+        this.savedMoves[this.savedMoves.length-1].blackcheck=this.board[this.blackKingPosition[0]][this.blackKingPosition[1]].inCapture
+        
+        //move made
+        this.temp.move([x,y],[i,j],this.board)
+        
         //check if the piece moved whether it's a king
         if(this.temp  instanceof King && this.temp.getColor()==="white" ) 
           this.whiteKingPosition=[i,j]
@@ -138,38 +192,24 @@ export class BoardComponent {
           this.blackKingPosition=[i,j]
 
 
-        //cleanup
-        this.cleanUp(this.tempPossibleMoves)
+        
+        let blackcheck=diagonalCheck(this.board,'black',this.blackKingPosition)|| UpDownLeftRightCheck(this.board,'black',this.blackKingPosition)
+        
+        let whitecheck=diagonalCheck(this.board,'white',this.whiteKingPosition)|| UpDownLeftRightCheck(this.board,'white',this.whiteKingPosition)
 
-        //save move
-        this.savedMoves.push({from:[x,y],to:[i,j],type:this.board[i][j]})
+        let [xb,yb]=this.blackKingPosition
+        this.board[xb][yb].inCapture=blackcheck
 
-        //move made
-        this.temp.move([x,y],[i,j],this.board)
+        let [xw,yw]=this.whiteKingPosition
+        this.board[xw][yw].inCapture=whitecheck
+        
 
-        if (this.temp.getColor()==='white') {
-           let blackcheck=diagonalCheck(this.board,'black',this.blackKingPosition)|| UpDownLeftRightCheck(this.board,'black',this.blackKingPosition)
-           
-           let whitecheck=diagonalCheck(this.board,'white',this.whiteKingPosition)|| UpDownLeftRightCheck(this.board,'white',this.whiteKingPosition)
 
-           let [xb,yb]=this.blackKingPosition
-           this.board[xb][yb].inCapture=blackcheck
-
-           let [xw,yw]=this.whiteKingPosition
-           this.board[xw][yw].inCapture=whitecheck
       
-        }
-        else if (this.temp.getColor()==='black') {
-           let whitecheck=diagonalCheck(this.board,'white',this.whiteKingPosition)|| UpDownLeftRightCheck(this.board,'white',this.whiteKingPosition)
-           let blackcheck=diagonalCheck(this.board,'black',this.blackKingPosition)|| UpDownLeftRightCheck(this.board,'black',this.blackKingPosition)
-           
-           let [xw,yw]=this.whiteKingPosition
-           this.board[xw][yw].inCapture=whitecheck
-
-           let [xb,yb]=this.blackKingPosition
-           this.board[xb][yb].inCapture=blackcheck
+      
+        
    
-        }
+        
         // test
         
         this.PM=checkLegalMoves(this.board,this.temp.getColor()==="white" ? this.blackKingPosition : this.whiteKingPosition)
@@ -181,6 +221,7 @@ export class BoardComponent {
       if(x===i && y===j)
         this.cleanUp(this.tempPossibleMoves)
       this.temp=null
+      this.board[i][j].isSelected=false
       this.tempPossibleMoves=[]
     }
 

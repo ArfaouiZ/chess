@@ -46,6 +46,10 @@
   .capture-cell{
     background-color: rgb(232, 54, 54);
   }
+
+  .selected-cell{
+    background-color: blueviolet;
+  }
   
   .row-label {
     font-size: 24px;
