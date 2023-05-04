@@ -11,7 +11,7 @@ export class Square{
     piece:any
     inCapture:boolean=false
     possibleMove:boolean=false
-    selectedPiece:boolean=false
+    isSelected :boolean=false
      
     
     constructor(piece? :Piece){

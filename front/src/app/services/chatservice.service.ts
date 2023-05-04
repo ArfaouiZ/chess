@@ -59,4 +59,18 @@ export class ChatserviceService {
     this.socket.emit("add user",user)
   }
 
+  takeBack(){
+    this.socket.emit("take back")
+  }
+
+  onTakeBack(){
+    return new Observable<any>(observer => {
+      this.socket.on('take back', (user) => {
+        observer.next(user);
+      });
+    });
+    
+
+  }
+
 }

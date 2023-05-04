@@ -14,7 +14,7 @@
         
         </div>
         
-          <div [ngClass]="{'capture-cell':board[i][j].inCapture}">
+          <div [ngClass]="{'capture-cell':board[i][j].inCapture,'selected-cell':board[i][j].isSelected}">
             <img *ngIf="board[i][j].piece" class="pieceLogo" [src]="board[i][j].piece.logo"/>
           </div>
        
