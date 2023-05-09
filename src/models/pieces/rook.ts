@@ -20,6 +20,9 @@ export class Rook extends Piece{
     hasMoved(){
         return this.hasmoved
     }
+    setMoved(){
+        this.hasmoved=true
+    }
     
 
     getName():string{

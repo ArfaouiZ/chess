@@ -49,7 +49,13 @@ export class Knight extends Piece{
             
           }
         let possibleCheck=this.isPinned(board,kingPosition,this.color)
-        if (possibleCheck) return []
+        if (possibleCheck){
+            let [xk,yk]=kingPosition
+            let [mx,my]=this.curPosition
+            let tpx=possibleCheck.at[0]
+            let tpy=possibleCheck.at[1]
+            if (this.inLine(xk,yk,tpx,tpy,mx,my))
+                return []}
         
        
         return possiblemoves

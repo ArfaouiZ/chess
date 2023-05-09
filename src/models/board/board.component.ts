@@ -177,19 +177,40 @@ export class BoardComponent {
         //save move
 
         this.savedMoves.push({from:[x,y],to:[i,j],capturedPiece:this.board[i][j],lastPM:this.PM})
-        //save 
         this.savedMoves[this.savedMoves.length-1].whitecheck=this.board[this.whiteKingPosition[0]][this.whiteKingPosition[1]].inCapture
         this.savedMoves[this.savedMoves.length-1].blackcheck=this.board[this.blackKingPosition[0]][this.blackKingPosition[1]].inCapture
-        
+        //handle en passant 
+        if (this.temp.getName()==="pawn" && Math.abs(j-y)===1 && !this.board[i][j].getPiece())
+            this.board[x][j]=new Square()
+            
         //move made
         this.temp.move([x,y],[i,j],this.board)
+
+
+        //handle castle 
+        if (this.temp.getName()==="rook")
+                 this.board[i][j].getPiece().setMoved()
+        else if (this.temp.getName()==="king" )
+              if(j-y==2) {
+                 this.board[x][7].getPiece().setMoved()
+                 this.board[x][7].getPiece().move([x,7],[x,5],this.board)}
+              else if (y-j==2){
+                 this.board[x][0].getPiece().setMoved() 
+                 this.board[x][0].getPiece().move([x,0],[x,3],this.board)}
+        
+        //lezem saved moved tetbadel 
+          
         
         //check if the piece moved whether it's a king
-        if(this.temp  instanceof King && this.temp.getColor()==="white" ) 
+        if(this.temp.getName()=="king" && this.temp.getColor()==="white" ) {
           this.whiteKingPosition=[i,j]
+          this.board[i][j].getPiece().setMoved()
+          }
 
-        if(this.temp  instanceof King && this.temp.getColor()==="black" ) 
+        if(this.temp.getName()=="king" && this.temp.getColor()==="black" ) {
           this.blackKingPosition=[i,j]
+          this.board[i][j].getPiece().setMoved()
+          }
 
 
         
@@ -199,9 +220,14 @@ export class BoardComponent {
 
         let [xb,yb]=this.blackKingPosition
         this.board[xb][yb].inCapture=blackcheck
+        
+        
 
         let [xw,yw]=this.whiteKingPosition
         this.board[xw][yw].inCapture=whitecheck
+        
+        
+        
         
 
 
@@ -211,9 +237,9 @@ export class BoardComponent {
    
         
         // test
+        let kpp=this.temp.getColor()==="white" ? this.blackKingPosition : this.whiteKingPosition
+        this.PM=checkLegalMoves(this.board,kpp,this.savedMoves)
         
-        this.PM=checkLegalMoves(this.board,this.temp.getColor()==="white" ? this.blackKingPosition : this.whiteKingPosition)
-        console.log("PM",this.PM)
 
       
       }
@@ -223,6 +249,7 @@ export class BoardComponent {
       this.temp=null
       this.board[i][j].isSelected=false
       this.tempPossibleMoves=[]
+
     }
 
     
@@ -232,7 +259,7 @@ export class BoardComponent {
 
   constructor() {
     this.createBoard();
-    this.PM =checkLegalMoves(this.board,this.whiteKingPosition)
+    this.PM =checkLegalMoves(this.board,this.whiteKingPosition,this.savedMoves)
     console.log('First PM',this.PM)
   }
 

@@ -7,7 +7,7 @@ import { Pawn } from "../pawn";
 import { King } from "../king";
 import { UpDownLeftRightCheck, diagonalCheck } from "./kingcheckposition";
 
-function checkLegalMoves(board :Square[][],kingPosition:number[]):any{
+function checkLegalMoves(board :Square[][],kingPosition:number[],savedMoves:any[]):any{
     //console.log(board)
     let [xk,yk]=kingPosition
     //console.log(xk,yk)
@@ -25,7 +25,7 @@ function checkLegalMoves(board :Square[][],kingPosition:number[]):any{
         for(let j=0;j<8;j++){
             if(board[i][j].getPiece() && board[i][j].getPiece().getColor()===color){
 
-                let possibleMoves=board[i][j].getPiece().possibleMoves(board,kingPosition)
+                let possibleMoves=board[i][j].getPiece().possibleMoves(board,kingPosition,savedMoves)
                 
                 if (kingInCheck){
                     let p=[]
@@ -60,6 +60,7 @@ function escapeCheck(board: Square[][],from: number[],to: number[],color:string,
     let tempBoard=copyBoard(board)
     let [x,y]=from
     tempBoard[x][y].getPiece().move(from,to,tempBoard)
+    
 
     if (tempBoard[to[0]][to[1]].getPiece().getName()==='king') kingPosition=[to[0],to[1]]
 

@@ -28,7 +28,7 @@ export class Pawn extends Piece{
         return false;
     }
     
-    possibleMoves(board:Square[][],kingPosition:number[]):number[][]{
+    possibleMoves(board:Square[][],kingPosition:number[],savedMoves:any[]):number[][]{
         let color: string=this.color;
         let [x,y]=this.curPosition;
         const possiblemoves:number[][]= []
@@ -49,7 +49,12 @@ export class Pawn extends Piece{
             if(this.inBoard(x+1,y-1) && board[x+1][y-1].getPiece() && board[x+1][y-1].getPiece().getColor()==="white" )
             possiblemoves.push([x+1,y-1]) 
 
-            //en Passant
+            //enPassant
+            if (this.curPosition[0]===4 && savedMoves.length){
+                let{from,to,capturedPiece,lastPM,whitecheck,blackcheck}=savedMoves[savedMoves.length-1]
+                if (Math.abs(from[0]-to[0])===2 && Math.abs(from[1]-this.curPosition[1])===1 && board[to[0]][to[1]].getPiece().getName()==="pawn" && board[to[0]][to[1]].getPiece().getColor()==='white')
+                    possiblemoves.push([to[0]+1,from[1]])
+                }
 
             }
 
@@ -70,7 +75,12 @@ export class Pawn extends Piece{
             //upper left diagonal capture
             if(this.inBoard(x-1,y-1) && board[x-1][y-1].getPiece() && board[x-1][y-1].getPiece().getColor()==="black" )
                 possiblemoves.push([x-1,y-1]) 
-            }
+            //enPassant 
+            if (this.curPosition[0]===3 && savedMoves.length){
+            let{from,to,capturedPiece,lastPM,whitecheck,blackcheck}=savedMoves[savedMoves.length-1]
+            if (Math.abs(from[0]-to[0])===2 && Math.abs(from[1]-this.curPosition[1])===1 && board[to[0]][to[1]].getPiece().getName()==="pawn" && board[to[0]][to[1]].getPiece().getColor()==='black')
+                possiblemoves.push([to[0]-1,from[1]])
+            }}
 
         let possibleCheck=this.isPinned(board,kingPosition,this.color)
         let xk=kingPosition[0]
@@ -94,7 +104,6 @@ export class Pawn extends Piece{
         
         return possiblemoves
 
-    }
+    }}
 
     
-}
