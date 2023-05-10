@@ -125,15 +125,32 @@ export abstract class Piece {
     return false
   }
 
-  move(from: number[],to: number[],board:Square[][]): void{
+  move(from: number[],to: number[],board:Square[][],possiblemoves:any[], forced:boolean): boolean{
     let x1=from[0],y1=from[1]
     let x2=to[0],y2=to[1]
-    board[x2][y2]=board[x1][y1]
-    board[x1][y1]=new Square()
-    this.curPosition=[x2,y2]
     
-  }
+    if (forced){
+        board[x2][y2]=board[x1][y1]
+        board[x1][y1]=new Square()
+        this.curPosition=[x2,y2]
+        return true }
+    else {
+      
+  
+      for(let tt of possiblemoves) {
+         if(tt[0]===x2 && tt[1]===y2){
+            board[x2][y2]=board[x1][y1]
+            board[x1][y1]=new Square()
+            this.curPosition=[x2,y2]
+            return true}
+      }
+         
+      return false 
+
+    }
+    
+  }}
 
   
 
-}
+

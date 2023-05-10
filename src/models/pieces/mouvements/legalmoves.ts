@@ -8,10 +8,7 @@ import { King } from "../king";
 import { UpDownLeftRightCheck, diagonalCheck } from "./kingcheckposition";
 
 function checkLegalMoves(board :Square[][],kingPosition:number[],savedMoves:any[]):any{
-    //console.log(board)
     let [xk,yk]=kingPosition
-    //console.log(xk,yk)
-    //console.log(board[7][4])
     let kingInCheck=board[xk][yk].inCapture
     let king=board[xk][yk].getPiece()
     let color=king.getColor()
@@ -55,15 +52,10 @@ function checkLegalMoves(board :Square[][],kingPosition:number[],savedMoves:any[
 
 
 function escapeCheck(board: Square[][],from: number[],to: number[],color:string,kingPosition:number[]): boolean{
-    
-    
     let tempBoard=copyBoard(board)
     let [x,y]=from
-    tempBoard[x][y].getPiece().move(from,to,tempBoard)
-    
-
+    tempBoard[x][y].getPiece().move(from,to,tempBoard,[],true)
     if (tempBoard[to[0]][to[1]].getPiece().getName()==='king') kingPosition=[to[0],to[1]]
-
     return diagonalCheck(tempBoard,color,kingPosition) || UpDownLeftRightCheck(tempBoard,color,kingPosition) 
 
 

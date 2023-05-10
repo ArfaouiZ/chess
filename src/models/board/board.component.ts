@@ -11,6 +11,7 @@ import { Lastmove } from '../lastmove/lastmove';
 import { diagonalCheck } from '../pieces/mouvements/kingcheckposition';
 import { UpDownLeftRightCheck } from '../pieces/mouvements/kingcheckposition';
 import { checkLegalMoves } from '../pieces/mouvements/legalmoves';
+import { isGameFinished } from '../pieces/mouvements/isgamefinished';
 
 
 
@@ -129,25 +130,18 @@ export class BoardComponent {
 
   clickPiece(i:number,j:number):void{
 
-    
+    let lastmove:any
+    let movemade:boolean
       //console.log("square",this.board[i][j])
     if (this.board[i][j].getPiece()!==false && this.temp===null){
-      
+      movemade=false
       this.temp=this.board[i][j].getPiece()
       this.board[i][j].isSelected=true
-
       let color=this.temp.getColor()
-      /* if (color==='white' )
-          this.tempPossibleMoves=this.temp.possibleMoves(this.board,this.whiteKingPosition)
-      else 
-      this.tempPossibleMoves=this.temp.possibleMoves(this.board,this.blackKingPosition) */
-      //console.log(this.PM)
       this.tempPossibleMoves=this.PM[i][j]
 
       
       //possible moves and captures
-      
-      
       this.showPossibleMoves(this.tempPossibleMoves)
       
     } 
@@ -156,35 +150,26 @@ export class BoardComponent {
       
       if ((x!==i || y!==j)){
         
-
-        
-
         //cleanup
         this.cleanUp(this.tempPossibleMoves)
-
         //save move
-        /* let lastMove:any ={}
-        lastMove.from=[x,y]
-        lastMove.to=[i,j]
-        lastMove.capturedPiece=this.board[i][j]
-        lastMove.lastPM=this.PM
-        lastMove.whitecheck=this.board[this.whiteKingPosition[0]][this.whiteKingPosition[1]].inCapture
-        lastMove.blackcheck=this.board[this.blackKingPosition[0]][this.blackKingPosition[1]].inCapture
-
-
-        this.savedMoves.push(lastMove) */
-
-        //save move
-
         this.savedMoves.push({from:[x,y],to:[i,j],capturedPiece:this.board[i][j],lastPM:this.PM})
         this.savedMoves[this.savedMoves.length-1].whitecheck=this.board[this.whiteKingPosition[0]][this.whiteKingPosition[1]].inCapture
         this.savedMoves[this.savedMoves.length-1].blackcheck=this.board[this.blackKingPosition[0]][this.blackKingPosition[1]].inCapture
-        //handle en passant 
-        if (this.temp.getName()==="pawn" && Math.abs(j-y)===1 && !this.board[i][j].getPiece())
-            this.board[x][j]=new Square()
+        
+        
             
         //move made
-        this.temp.move([x,y],[i,j],this.board)
+        movemade=this.temp.move([x,y],[i,j],this.board,this.PM[x][y],false)
+
+        if (movemade){
+          
+        
+        
+        //handle en passant 
+        if (this.temp.getName()==="pawn" && Math.abs(j-y)===1 && !this.savedMoves[this.savedMoves.length-1].capturedPiece.getPiece())
+            { if (this.temp.getColor()==="white") this.board[i+1][j]=new Square()
+              else this.board[i-1][j]=new Square() }
 
 
         //handle castle 
@@ -193,10 +178,10 @@ export class BoardComponent {
         else if (this.temp.getName()==="king" )
               if(j-y==2) {
                  this.board[x][7].getPiece().setMoved()
-                 this.board[x][7].getPiece().move([x,7],[x,5],this.board)}
+                 this.board[x][7].getPiece().move([x,7],[x,5],this.board,this.PM[x][7],true)}
               else if (y-j==2){
                  this.board[x][0].getPiece().setMoved() 
-                 this.board[x][0].getPiece().move([x,0],[x,3],this.board)}
+                 this.board[x][0].getPiece().move([x,0],[x,3],this.board,this.PM[x][0],true)}
         
         //lezem saved moved tetbadel 
           
@@ -215,39 +200,43 @@ export class BoardComponent {
 
         
         let blackcheck=diagonalCheck(this.board,'black',this.blackKingPosition)|| UpDownLeftRightCheck(this.board,'black',this.blackKingPosition)
-        
         let whitecheck=diagonalCheck(this.board,'white',this.whiteKingPosition)|| UpDownLeftRightCheck(this.board,'white',this.whiteKingPosition)
 
         let [xb,yb]=this.blackKingPosition
         this.board[xb][yb].inCapture=blackcheck
-        
-        
-
         let [xw,yw]=this.whiteKingPosition
         this.board[xw][yw].inCapture=whitecheck
         
         
-        
-        
-
-
-      
-      
-        
-   
-        
-        // test
+        // refill possible moves 
         let kpp=this.temp.getColor()==="white" ? this.blackKingPosition : this.whiteKingPosition
         this.PM=checkLegalMoves(this.board,kpp,this.savedMoves)
+        if (this.temp.getColor()==="white") console.log("black's turn ", this.PM)
+        else console.log("white's turn",this.PM)
+        
+
+        //check if game is finished 
+        
+        if(isGameFinished(this.PM)) 
+                {console.log("FINISHED")
+                if (this.temp.getColor()==="white" && blackcheck) 
+                      console.log("white won")
+                else if (this.temp.getColor()==="black" && whitecheck) 
+                      console.log("black won ")
+                else console.log("Draw : Stalemate ")}
         
 
       
-      }
+      }}
+
        //remove possible moves and capture if clicked same piece twice
-      if(x===i && y===j)
+      else if(x===i && y===j)
         this.cleanUp(this.tempPossibleMoves)
+      
+      this.savedMoves.pop()  
       this.temp=null
       this.board[i][j].isSelected=false
+      this.board[x][y].isSelected=false
       this.tempPossibleMoves=[]
 
     }
@@ -260,7 +249,7 @@ export class BoardComponent {
   constructor() {
     this.createBoard();
     this.PM =checkLegalMoves(this.board,this.whiteKingPosition,this.savedMoves)
-    console.log('First PM',this.PM)
+    
   }
 
   createBoard() {
