@@ -7,7 +7,7 @@ export class King extends Piece{
     color: string;
     logo: string;
     name:string="king"
-    hasmoved:boolean=false
+    hasmoved:number=0
 
 
     constructor(color: string,pos: number[]){
@@ -21,9 +21,9 @@ export class King extends Piece{
     hasMoved(){
         return this.hasmoved
     }
-    setMoved(){
+    setMoved(x:number){
         
-        this.hasmoved=true
+        this.hasmoved+=x
     }
 
     getName():string{
@@ -61,7 +61,7 @@ export class King extends Piece{
         // kingside castle
         
         
-        if (this.hasMoved()===false && !c && board[x][7].getPiece() && board[x][7].getPiece().getName()=="rook" && board[x][7].getPiece().hasMoved()===false){
+        if (this.hasMoved()===0 && !c && board[x][7].getPiece() && board[x][7].getPiece().getName()=="rook" && board[x][7].getPiece().hasMoved()===0){
             
             for(let j=1;j<3;j++){
             if( board[x][y+j].getPiece()===false  ){
@@ -74,7 +74,7 @@ export class King extends Piece{
         //Queenside castle
         
         
-        if (this.hasMoved()===false  && !c && board[x][0].getPiece() && board[x][0].getPiece().getName()=="rook" && board[x][0].getPiece().hasMoved()===false){
+        if (this.hasMoved()===0  && !c && board[x][0].getPiece() && board[x][0].getPiece().getName()=="rook" && board[x][0].getPiece().hasMoved()===0){
             
             for(let j=1;j<3;j++){
             if( board[x][y-j].getPiece()===false  ){

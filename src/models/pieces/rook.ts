@@ -7,7 +7,7 @@ export class Rook extends Piece{
     color: string;
     logo: any;
     name:string="rook"
-    hasmoved:boolean=false
+    hasmoved:number=0
 
     constructor(color: string,pos: number[]){
 
@@ -20,8 +20,8 @@ export class Rook extends Piece{
     hasMoved(){
         return this.hasmoved
     }
-    setMoved(){
-        this.hasmoved=true
+    setMoved(x:number){
+        this.hasmoved+=x
     }
     
 

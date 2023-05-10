@@ -50,7 +50,6 @@ export class Pawn extends Piece{
             possiblemoves.push([x+1,y-1]) 
 
             //enPassant
-            
             if (this.curPosition[0]===4 && savedMoves.length){
                 let{from,to,capturedPiece,lastPM,whitecheck,blackcheck}=savedMoves[savedMoves.length-1]
                 
