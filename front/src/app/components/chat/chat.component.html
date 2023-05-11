@@ -1,0 +1,39 @@
+<!-- <h1>chat works</h1> -->
+<div class="chat-container box">
+    <header class="chat-header">
+      <h1><i class="fas fa-smile"></i> ChessChat</h1>
+      <a href="index.html" class="btn">Leave Room</a>
+    </header>
+    <main class="chat-main">
+      <div class="chat-messages">
+        <div class="message" *ngFor="let msg of messages">
+            <p class="meta">{{msg.sender}}<span> {{msg.time}}</span></p>
+            <p class="text">
+                {{msg.content}}
+            </p>
+        </div>
+      </div>
+      <div class="chat-sidebar">
+        <h3>Players</h3>
+        <ul id="users">
+          <li>{{sender}}</li>
+          <li>{{receiver}}</li>
+        </ul>
+        <!-- <button>take back</button> -->
+      </div>
+    </main>
+    <div class="chat-form-container">
+      <div id="chat-form">
+        <input
+          id="msg"
+          type="text"
+          placeholder="Enter Message"
+          required
+          autocomplete="off"
+          #msg
+          (keyup)="handleKeyUp($event,msg)"
+        />
+        <button class="btn" (click)="sendMessage(msg)"><i class="fas fa-paper-plane"></i> Send</button>
+      </div>
+    </div>
+</div>
