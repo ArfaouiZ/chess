@@ -21,7 +21,7 @@ export abstract class Piece {
   }
    
 
-  abstract isValidMove(s: number[]): boolean;
+  
   inBoard(i:number,j:number): boolean{
     if(i<8 && i>-1 && j<8 &&j>-1) return true
     return false 
@@ -135,7 +135,7 @@ export abstract class Piece {
         this.curPosition=[x2,y2]
         return true }
     else {
-      console.log(board[x2][y2].possibleMove,board[x2][y2].inCapture)
+      
       if(board[x2][y2].possibleMove ||board[x2][y2].inCapture)
           {board[x2][y2]=board[x1][y1]
             board[x1][y1]=new Square()

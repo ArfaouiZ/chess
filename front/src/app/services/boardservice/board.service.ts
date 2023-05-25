@@ -5,7 +5,7 @@ import { checkLegalMoves } from 'src/models/pieces/mouvements/legalmoves';
 
 import { Square } from 'src/models/square/Square';
 import { cleanUp, createBoard, showPossibleMoves } from './boardmethods';
-import { isGameFinished } from 'src/models/pieces/mouvements/isgamefinished';
+import { isGameFinished, threefoldrep } from 'src/models/pieces/mouvements/Endings';
 import { BehaviorSubject } from 'rxjs';
 
 
@@ -16,6 +16,7 @@ import { BehaviorSubject } from 'rxjs';
 export class BoardService {
   board: Square[][] = [];
   savedMoves:any =[]
+  savedpositions:any={}
   PM:any=[]
   temp:any=null
   side:string=""
@@ -47,16 +48,32 @@ export class BoardService {
 
   }
 
-  
+  BoardToString():string{
+    let ch=""
+    for(let n=0;n<8;n++){
+      for(let m=0;m<8;m++){
+        let temp=this.board[n][m].getPiece()
+        if (!temp) {ch+="."}
+        else if(temp.getColor()==="black") { ch+=temp.getName().toUpperCase( );}
+        else {ch+=temp.getName()} 
+
+      }
+      ch+="/"
+      
+    }
+    return ch 
+  }
 
   receiveMove(move:any):any{
-    let {from,to,PM,savedMoves,blackcheck,whitecheck,blackKingPosition,whitekingPosition,isGameFinished}=move
+    let {from,to,PM,savedMoves,blackcheck,whitecheck,blackKingPosition,whitekingPosition,isGameFinished,savedpositions}=move
     let [x,y]=from;let [bkx,bky]=blackKingPosition;let [wkx,wky]=whitekingPosition
     this.PM=PM
     this.board[x][y].getPiece().move(from,to,this.board,[],true)
     this.blackKingPosition=blackKingPosition;this.board[bkx][bky].inCapture=blackcheck
     this.whiteKingPosition=whitekingPosition;this.board[wkx][wky].inCapture=whitecheck
     this.savedMoves=savedMoves
+    this.savedpositions=savedpositions
+
     
     return isGameFinished
     
@@ -254,14 +271,14 @@ export class BoardService {
         
 
         //check if game is finished 
+        let bs=this.BoardToString()
         
-        if(isGameFinished(this.PM)) 
+        if (threefoldrep(this.savedpositions,bs)) gameFinished="3-fold repetition"
+        else if(isGameFinished(this.PM)) 
                 {console.log("FINISHED")
                 if (this.temp.getColor()==="white" && blackcheck){
                   gameFinished="white won"
                   console.log("white won")
-                  //alert("white won"
-
                 } 
                       
                 else if (this.temp.getColor()==="black" && whitecheck)
@@ -273,7 +290,7 @@ export class BoardService {
 
       
           moveInfo={from:[x,y],to:[i,j],PM:this.PM,savedMoves:this.savedMoves,blackcheck:blackcheck,whitecheck:whitecheck
-            ,blackKingPosition:this.blackKingPosition,whitekingPosition:this.whiteKingPosition,isGameFinished:gameFinished}
+            ,blackKingPosition:this.blackKingPosition,whitekingPosition:this.whiteKingPosition,isGameFinished:gameFinished,savedpositions:this.savedpositions}
           this.PM=[]
       }
       else if (!movemade){
