@@ -8,7 +8,7 @@
    /*  left: -170px; */
    /*  top: -20px; */
     left: 70px; 
-    top: 30px;
+    top: 50px;
    /*  background-color: #b58863;  */
     
     /* height:min-content;
@@ -107,4 +107,16 @@
     width: 120px;
     height: 30px;
   }
+
+  /* timer css */
+  .chess-clock{
+    background-color: #2D2C2C;
+    color: #FFFFFF;
+    width: 200px;
+    text-align: center;
+    font-size: 55px;
+    position: relative;
+    top: 126px;
+    left:150px;
+}
   

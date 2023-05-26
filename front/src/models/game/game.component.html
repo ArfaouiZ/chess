@@ -1,4 +1,4 @@
-<!-- <div class="welcome">
+<div class="welcome">
     <app-waiting *ngIf="isCreator && !ready" [gameId]="gameId" [player]="player"></app-waiting> 
      <div *ngIf="!isCreator && !ready" class="container">
         <form class="form">
@@ -11,10 +11,9 @@
             <button class="form__button" type="submit" (click)="joinGame()">Continue</button>
         </form>
     </div>
-</div>   -->
-<!-- app-timer *ngIf="true" [minutes]="time"></app-timer>  -->
-<div *ngIf="true" class="game-ui">
-    <board [room]="gameId" [side]="side" [time]="time"></board>
+</div>   
+<div *ngIf="ready" class="game-ui">
+    <board [room]="gameId" [side]="side" [minutes]="time"></board>
     <app-chat  [sender]="player" [receiver]="opponent" [roomCode]="gameId" ></app-chat>
 </div> 
 

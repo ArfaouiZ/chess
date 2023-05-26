@@ -17,7 +17,13 @@ export class BoardComponent implements OnInit {
   board: Square[][] = [];
   @Input() room:string=""
   @Input() side:string=""
-  @Input() time:number=0
+
+
+  @Input() minutes:number=0
+  seconds: number=0;
+  intervalId: any;
+
+  turn:string="white"
 
   finished:string=""
 
@@ -25,6 +31,12 @@ export class BoardComponent implements OnInit {
     this.boardservice.initGame(this.side) 
     this.chatservice.onMoveMade().subscribe((move)=>{
       console.log("move made",move)
+      
+      this.startCountdown()
+
+
+
+
       let gameFinished=this.boardservice.receiveMove(move)
       if(gameFinished==="white won"){
         this.finished="white won"
@@ -37,11 +49,10 @@ export class BoardComponent implements OnInit {
       this.openDialog(option)
     })
 
-    /* this.boardservice.finished.subscribe((x)=>{
-      console.log(x,"game finished")
-      if(x==="white won")
-        alert(x)
-    }) */
+    if(this.side===this.turn)
+      this.startCountdown()
+
+   
     
   }
   
@@ -72,8 +83,17 @@ export class BoardComponent implements OnInit {
       let moveInfo:any=this.boardservice.clickPiece(i,j)
       if(Object.keys(moveInfo).length){
 
-        console.log("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
+
+        console.log("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",this.side)
+        let option={opponent:this.side,type:"pawn promotion"}
+        this.openDialog(option)
+
+        this.pauseCountdown()
         
+        this.turn=this.turn==="white" ? "black": "white"
+
+        
+
         if(moveInfo.isGameFinished==="white won"){
           this.finished="white won"
           this.openDialog("white won")
@@ -85,7 +105,6 @@ export class BoardComponent implements OnInit {
       }
     
 
-   
     /* this.chatservice.makeMove({from:}) */
   }
 
@@ -95,6 +114,38 @@ export class BoardComponent implements OnInit {
     this.board=this.boardservice.getBoard()
     /* this.boardservice.initGame(this.side) */
     console.log(this.side,"side")
+  }
+
+  //timer methods
+
+  startCountdown(): void {
+    this.intervalId = setInterval(() => {
+      if (this.minutes === 0 && this.seconds === 0) {
+        this.stopCountdown();
+      } else {
+        if (this.seconds === 0) {
+          this.minutes--;
+          this.seconds = 59;
+        } else {
+          this.seconds--;
+        }
+      }
+    }, 1000);
+    
+  }
+
+  pauseCountdown(): void {
+    clearInterval(this.intervalId);  
+  }
+
+  resumeCountdown(): void {
+   
+    this.startCountdown();
+    
+  }
+
+  stopCountdown(): void {
+    clearInterval(this.intervalId);
   }
 
   

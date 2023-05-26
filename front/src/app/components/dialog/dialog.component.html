@@ -1,4 +1,4 @@
-<div *ngIf="data.type!=='resign'" class="dialog-box">
+<div *ngIf="data.type==='take back' || data.type==='draw'" class="dialog-box">
     <h1 mat-dialog-title>Attention !</h1>
     <div mat-dialog-content>
     <p *ngIf="data.type==='draw'">{{data.opponent}} has offered a draw</p>
@@ -20,4 +20,27 @@
     <button  mat-raised-button color="warn" (click)="onNoClick('home')">home</button>
     </div>
 </div>
+
+<div *ngIf="data.type==='pawn promotion'" class="dialog-box">
+    <!-- <h1 mat-dialog-title>Pawn</h1> -->
+    <div mat-dialog-content>
+        <div *ngIf="data.opponent==='white'" class="promotion-options">
+            <img src="../../../assets/pieces/white/queen.png" (click)="onNoClick('queen')">
+            <img src="../../../assets/pieces/white/knight.png" (click)="onNoClick('knight')">
+            <img src="../../../assets/pieces/white/rook.png" (click)="onNoClick('rook')">
+            <img src="../../../assets/pieces/white/bishop.png" (click)="onNoClick('bishop')">
+        </div>
+
+        <div *ngIf="data.opponent==='black'" class="promotion-options">
+            <img src="../../../assets/pieces/black/queen.png" (click)="onNoClick('queen')">
+            <img src="../../../assets/pieces/black/knight.png" (click)="onNoClick('knight')">
+            <img src="../../../assets/pieces/black/rook.png" (click)="onNoClick('rook')">
+            <img src="../../../assets/pieces/black/bishop.png" (click)="onNoClick('bishop')">
+        </div>
+        
+    </div>
+    
+</div>
+
+
 

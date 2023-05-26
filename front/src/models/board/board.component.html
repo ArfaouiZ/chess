@@ -3,7 +3,13 @@
 <!-- <h1 *ngIf="finished==='white won'">white won</h1> -->
 <!-- <app-timer [minutes]="5"></app-timer> -->
 <div class="board-container">
-  <!-- <app-timer [minutes]="5"></app-timer> -->
+  <!-- <app-timer [minutes]="time" [turn]="side===turn"></app-timer> -->
+  <div class="chess-clock">
+    <div>
+      <span>{{ minutes | number: '2.0' }}:</span>
+      <span>{{ seconds | number: '2.0' }}</span>
+    </div>
+</div>
   <table class="board">
     <tr>
       <td class="empty-cell"></td>

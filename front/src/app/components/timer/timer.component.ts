@@ -7,6 +7,8 @@ import { Component,Input, OnInit } from '@angular/core';
 })
 export class TimerComponent implements OnInit {
   @Input()minutes: number=0;
+  @Input()turn:boolean=false
+  
   seconds: number=0;
 
   
