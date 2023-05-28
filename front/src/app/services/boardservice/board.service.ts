@@ -23,6 +23,7 @@ export class BoardService {
   board: Square[][] = [];
   savedMoves:any =[]
   savedpositions:any={}
+  previouspositions:any=[]
   PM:any=[]
   temp:any=null
   side:string=""
@@ -59,9 +60,10 @@ export class BoardService {
   
 
   receiveMove(move:any):any{
-    let {ch,from,to,PM,savedMoves,blackcheck,whitecheck,blackKingPosition,whitekingPosition,isGameFinished}=move
+    let {prevpos,ch,from,to,PM,savedMoves,blackcheck,whitecheck,blackKingPosition,whitekingPosition,isGameFinished}=move
     let [bkx,bky]=blackKingPosition;let [wkx,wky]=whitekingPosition
     this.PM=PM
+    this.previouspositions=prevpos
     this.StringToBoard(ch)
     this.blackKingPosition=blackKingPosition;this.board[bkx][bky].inCapture=blackcheck
     this.whiteKingPosition=whitekingPosition;this.board[wkx][wky].inCapture=whitecheck
@@ -309,7 +311,7 @@ export class BoardService {
         //check if game is finished 
         let bs=this.BoardToString()
 
-        if (threefoldrep(this.savedpositions,bs)) gameFinished="3-fold repetition"
+        if (threefoldrep(this.savedpositions,bs,this.previouspositions)) gameFinished="3-fold repetition"
         else if(isGameFinished(this.PM)) 
                 {console.log("FINISHED")
                 if (this.temp.getColor()==="white" && blackcheck){
@@ -328,7 +330,7 @@ export class BoardService {
         
 
       
-          moveInfo={ch:bs,from:[x,y],to:[i,j],PM:this.PM,savedMoves:this.savedMoves,blackcheck:blackcheck,whitecheck:whitecheck
+          moveInfo={prevpos:this.previouspositions,ch:bs,from:[x,y],to:[i,j],PM:this.PM,savedMoves:this.savedMoves,blackcheck:blackcheck,whitecheck:whitecheck
             ,blackKingPosition:this.blackKingPosition,whitekingPosition:this.whiteKingPosition,isGameFinished:gameFinished}
           this.PM=[]
       }
