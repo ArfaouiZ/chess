@@ -1,7 +1,7 @@
-<div *ngIf="data.type==='take back' || data.type==='draw'" class="dialog-box">
+<div *ngIf="data.type==='take back' || data.type==='offer draw'" class="dialog-box">
     <h1 mat-dialog-title>Attention !</h1>
     <div mat-dialog-content>
-    <p *ngIf="data.type==='draw'">{{data.opponent}} has offered a draw</p>
+    <p *ngIf="data.type==='offer draw'">{{data.opponent}} has offered a draw</p>
     <p *ngIf="data.type==='take back'">{{data.opponent}} proposed a take back</p>
     </div>
     <div mat-dialog-actions class="dialog-actions">
@@ -10,10 +10,13 @@
     </div>
 </div>
 
-<div *ngIf="data.type==='resign'" class="dialog-box">
-    <h1 mat-dialog-title>Attention !</h1>
+<div *ngIf="data.type==='resign' || data.type==='draw' || data.type==='stale mate' || data.type==='checkmate'" class="dialog-box">
+    <h1 mat-dialog-title>Game Over</h1>
     <div mat-dialog-content>
-    <p>{{data.opponent}} has resgined</p>
+        <p *ngIf="data.type==='resign'">{{data.opponent}} has resgined {{data.opponent==="white" ? "black": "white"}} wins</p>
+        <p *ngIf="data.type==='checkmate'">checkmate {{data.opponent}} wins</p>
+        <p *ngIf="data.type==='draw'">Draw</p>
+        <p *ngIf="data.type==='stale mate'">Stale mate</p>
     </div>
     <div mat-dialog-actions class="dialog-actions">
     <button mat-raised-button color="primary" (click)="onNoClick('view board')">view board</button>
@@ -37,10 +40,10 @@
             <img src="../../../assets/pieces/black/rook.png" (click)="onNoClick('rook')">
             <img src="../../../assets/pieces/black/bishop.png" (click)="onNoClick('bishop')">
         </div>
-        
     </div>
-    
 </div>
+
+
 
 
 

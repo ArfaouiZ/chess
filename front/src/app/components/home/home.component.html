@@ -11,7 +11,7 @@
             <mat-form-field class="game-info">
                 <mat-label>Select side</mat-label>
                 <mat-select [(value)]="side" [disabled]="!user">
-                  <mat-option>None</mat-option>
+                  
                   <mat-option value="white">White</mat-option>
                   <mat-option value="black">Black</mat-option>
                   <mat-option value="random">Random Side</mat-option>
@@ -20,7 +20,6 @@
             <mat-form-field class="game-info">
                 <mat-label>Select Time</mat-label>
                 <mat-select [(value)]="time" [disabled]="!side">
-                  <mat-option>None</mat-option>
                   <mat-option value="rapid">Rapid</mat-option>
                   <mat-option value="blitz">Blitz</mat-option>
                   <mat-option value="bullet">Bullet</mat-option>

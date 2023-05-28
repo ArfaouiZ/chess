@@ -1,49 +1,65 @@
  
 <!-- <h1>side: {{side}}</h1> -->
-<!-- <h1 *ngIf="finished==='white won'">white won</h1> -->
-<!-- <app-timer [minutes]="5"></app-timer> -->
 <div class="board-container">
-  <!-- <app-timer [minutes]="time" [turn]="side===turn"></app-timer> -->
   <div class="chess-clock">
     <div>
       <span>{{ minutes | number: '2.0' }}:</span>
       <span>{{ seconds | number: '2.0' }}</span>
     </div>
 </div>
-  <table class="board">
+  <table class="board" *ngIf="side==='white'">
     <tr>
       <td class="empty-cell"></td>
-      
       <td class="empty-cell"></td>
     </tr>
     <tr *ngFor="let row of [8, 7, 6, 5, 4, 3, 2, 1]; let i = index">
-      <td [ngClass]="{'row-label':true,'black-view':side==='black'}">{{ row }}</td>
+      <td [ngClass]="{'row-label':true}">{{ row }}</td>
       <td class="cell" *ngFor="let col of ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h']; let j = index" [ngClass]="{ 'white-cell': (i+j) % 2 == 0, 'black-cell': (i+j) % 2 == 1 }" (click)="makeMove(i,j)">
         <div *ngIf="board[i][j].piece===false && board[i][j].possibleMove">
-          <!-- 
-          <img class="possible-move"  src="https://assets.untappd.com/site/beer_logos_hd/beer-4817317_108bb_hd.jpeg"/> -->
           <img class="possible-move"  src="../../assets/possible-move.png"/>
-        
         </div>
-        
           <div [ngClass]="{'capture-cell':board[i][j].inCapture,'selected-cell':board[i][j].isSelected}">
             <img *ngIf="board[i][j].piece" class="pieceLogo" [src]="board[i][j].piece.logo"/>
           </div>
-       
-        
       </td>
-      
     </tr>
     <tr>
       <td class="empty-cell" ></td>
       <td [ngClass]="{'col-label':true}" *ngFor="let col of ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h']" >{{ col }}</td>
       <td class="empty-cell"></td>
     </tr>
-    <!-- <button (click)="takeBack()">take back</button> -->
   </table>
+
+  <table class="board" *ngIf="side==='black'">
+    <tr>
+      <td class="empty-cell"></td>
+      <td class="empty-cell"></td>
+    </tr>
+    <tr *ngFor="let row of [1, 2, 3, 4, 5, 6, 7, 8]; let i = index">
+      <td [ngClass]="{'row-label':true}">{{ row }}</td>
+      <td class="cell" *ngFor="let col of ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h']; let j = index" [ngClass]="{ 'white-cell': (i+j) % 2 == 0, 'black-cell': (i+j) % 2 == 1 }" (click)="makeMove(board.length-1-i,board.length-1-j)">
+        <div *ngIf="board[board.length-1-i][board.length-1-j].piece===false && board[board.length-1-i][board.length-1-j].possibleMove">
+          <img class="possible-move"  src="../../assets/possible-move.png"/>
+        </div>
+          <div [ngClass]="{'capture-cell':board[board.length-1-i][board.length-1-j].inCapture,'selected-cell':board[board.length-1-i][board.length-1-j].isSelected}">
+            <img *ngIf="board[board.length-1-i][board.length-1-j].piece" class="pieceLogo" [src]="board[board.length-1-i][board.length-1-j].piece.logo"/>
+          </div>
+      </td>
+    </tr>
+    <tr>
+      <td class="empty-cell" ></td>
+      <td [ngClass]="{'col-label':true}" *ngFor="let col of ['h', 'g', 'f', 'e', 'd', 'c', 'b', 'a']" >{{ col }}</td>
+      <td class="empty-cell"></td>
+    </tr>
+  </table>
+
+
+
+
+
  <div class="in-game-options">
     <button class="btn" (click)="sendOption('resign')" >Resign</button>
-    <button class="btn" (click)="sendOption('draw')" >Offer Draw</button>
+    <button class="btn" (click)="sendOption('offer draw')" >Offer Draw</button>
     <button class="btn" (click)="sendOption('take back')">Take Back</button>
   </div> 
 </div>

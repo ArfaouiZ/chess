@@ -28,7 +28,6 @@ function createBoard(board:Square[][]) {
       board[0][5]=new Square(new Bishop("black",[0,5])) ;
       board[0][6]=new Square(new Knight("black",[0,6])) ;
       board[0][7]=new Square(new Rook("black",[0,7])) ;
-
       board[7][0]=new Square(new Rook("white",[7,0])) ;
       board[7][1]=new Square(new Knight("white",[7,1])) ;
       board[7][2]=new Square(new Bishop("white",[7,2])) ;
@@ -41,9 +40,6 @@ function createBoard(board:Square[][]) {
   }
 
 function showPossibleMoves(possiblemoves:number[][],board:Square[][]):void{
-    
-    
-    //console.log("show possible moves",possiblemoves)
     for(let move of possiblemoves){
       let [a,b]=move
       if(board[a][b].getPiece())
@@ -54,8 +50,6 @@ function showPossibleMoves(possiblemoves:number[][],board:Square[][]):void{
   }
 
 function cleanUp(possiblemoves:number[][],board:Square[][]):void{
-    
-    //console.log("claen possible moves",possiblemoves)
     for(let move of possiblemoves){
       let [a,b]=move
       if(board[a][b].getPiece())

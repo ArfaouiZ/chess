@@ -6,4 +6,14 @@ function isGameFinished(PM:any[]):boolean{
     }
     return true
 }
-export{isGameFinished}
+
+function threefoldrep(previous:any,current:string,t:any[]):boolean{
+    t.push(current)
+    if (!previous[current]) {previous[current]=1; console.log("position has been reached ",previous[current]);return false }
+    previous[current]+=1
+    console.log("position has been reached ",previous[current])
+    if (previous[current]===3) return true 
+    return false  } 
+
+
+export{isGameFinished,threefoldrep}

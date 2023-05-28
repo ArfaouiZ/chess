@@ -5,8 +5,14 @@ import { checkLegalMoves } from 'src/models/pieces/mouvements/legalmoves';
 
 import { Square } from 'src/models/square/Square';
 import { cleanUp, createBoard, showPossibleMoves } from './boardmethods';
-import { isGameFinished } from 'src/models/pieces/mouvements/isgamefinished';
+import { isGameFinished, threefoldrep } from 'src/models/pieces/mouvements/isgamefinished';
 import { BehaviorSubject } from 'rxjs';
+import { Rook } from 'src/models/pieces/rook';
+import { Bishop } from 'src/models/pieces/bishop';
+import { Knight } from 'src/models/pieces/knight';
+import { Pawn } from 'src/models/pieces/pawn';
+import { King } from 'src/models/pieces/king';
+import { Queen } from 'src/models/pieces/queen';
 
 
 
@@ -16,6 +22,7 @@ import { BehaviorSubject } from 'rxjs';
 export class BoardService {
   board: Square[][] = [];
   savedMoves:any =[]
+  savedpositions:any={}
   PM:any=[]
   temp:any=null
   side:string=""
@@ -52,10 +59,10 @@ export class BoardService {
   
 
   receiveMove(move:any):any{
-    let {from,to,PM,savedMoves,blackcheck,whitecheck,blackKingPosition,whitekingPosition,isGameFinished}=move
-    let [x,y]=from;let [bkx,bky]=blackKingPosition;let [wkx,wky]=whitekingPosition
+    let {ch,from,to,PM,savedMoves,blackcheck,whitecheck,blackKingPosition,whitekingPosition,isGameFinished}=move
+    let [bkx,bky]=blackKingPosition;let [wkx,wky]=whitekingPosition
     this.PM=PM
-    this.board[x][y].getPiece().move(from,to,this.board,[],true)
+    this.StringToBoard(ch)
     this.blackKingPosition=blackKingPosition;this.board[bkx][bky].inCapture=blackcheck
     this.whiteKingPosition=whitekingPosition;this.board[wkx][wky].inCapture=whitecheck
     this.savedMoves=savedMoves
@@ -148,7 +155,49 @@ export class BoardService {
     }
     console.log("take back done")}
 
-  
+  BoardToString():string{
+      let ch=""
+      for(let n=0;n<8;n++){
+        for(let m=0;m<8;m++){
+          let temp=this.board[n][m].getPiece()
+          if (!temp) {ch+=".-"}
+          else if(temp.getColor()==="black") { ch=ch+temp.getName().toUpperCase( )+"-"}
+          else {ch=ch+temp.getName()+"-"} }
+        ch+="/"
+      }
+     return ch
+    }
+  StringToBoard(ch:string):void{
+    let rows=ch.split("/",8)
+    let cells:string[]
+    for(let i=0;i<8;i++){
+      cells=rows[i].split("-",8)
+      for(let j=0;j<8;j++){
+        let color:string
+        let nae=cells[j]
+        if (nae===".") {this.board[i][j]=new Square();continue}
+        if(nae===nae.toUpperCase()) color="black" ;else color="white"
+        nae=nae.toLowerCase()
+        switch (nae) {
+          case "queen":
+              this.board[i][j]=new Square(new Queen(color,[i,j]))
+              break;
+          case "rook":
+              this.board[i][j]=new Square(new Rook(color,[i,j]))
+              break;
+          case "bishop":
+              this.board[i][j]=new Square(new Bishop(color,[i,j]))
+              break;
+          case "knight":
+              this.board[i][j]=new Square(new Knight(color,[i,j]))
+              break;
+          case "pawn":
+              this.board[i][j]=new Square(new Pawn(color,[i,j]))
+              break;
+          case "king":
+              this.board[i][j]=new Square(new King(color,[i,j]))
+              break;}
+    }}}
 
   save(from:number[],to:number[],capturedSquare:Square,lastPM:any[],whitecheck:boolean,blackcheck:boolean,nature:number){
     let [x,y]=from
@@ -167,7 +216,7 @@ export class BoardService {
     let movemade:boolean=false
     let moveInfo={}
     let gameFinished=""
-      //console.log("square",this.board[i][j])
+     
 
     //selectPiece
     if (this.board[i][j].getPiece()!==false && this.temp===null && this.PM.length ){
@@ -255,26 +304,31 @@ export class BoardService {
         
         
 
-        //check if game is finished 
         
-        if(isGameFinished(this.PM)) 
+        
+        //check if game is finished 
+        let bs=this.BoardToString()
+
+        if (threefoldrep(this.savedpositions,bs)) gameFinished="3-fold repetition"
+        else if(isGameFinished(this.PM)) 
                 {console.log("FINISHED")
                 if (this.temp.getColor()==="white" && blackcheck){
                   gameFinished="white won"
                   console.log("white won")
-                  //alert("white won"
-
                 } 
                       
                 else if (this.temp.getColor()==="black" && whitecheck)
-                      gameFinished="black won"
+                    gameFinished="black won"
                 else
                     gameFinished="stale mate" 
               }
+                
+        
+              
         
 
       
-          moveInfo={from:[x,y],to:[i,j],PM:this.PM,savedMoves:this.savedMoves,blackcheck:blackcheck,whitecheck:whitecheck
+          moveInfo={ch:bs,from:[x,y],to:[i,j],PM:this.PM,savedMoves:this.savedMoves,blackcheck:blackcheck,whitecheck:whitecheck
             ,blackKingPosition:this.blackKingPosition,whitekingPosition:this.whiteKingPosition,isGameFinished:gameFinished}
           this.PM=[]
       }
@@ -298,8 +352,6 @@ export class BoardService {
       
 
     }
-
-    console.log(movemade,"moved made")
     
     return moveInfo
     

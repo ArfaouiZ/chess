@@ -32,21 +32,48 @@ export class BoardComponent implements OnInit {
     this.chatservice.onMoveMade().subscribe((move)=>{
       console.log("move made",move)
       
-      this.startCountdown()
-
-
-
-
+      
       let gameFinished=this.boardservice.receiveMove(move)
+      
+
       if(gameFinished==="white won"){
-        this.finished="white won"
-        this.openDialog("white won")
+        this.stopCountdown() 
+        this.openDialog({opponent:"white",type:"checkmate"})
       }
+      else if(gameFinished==="black won"){
+        this.stopCountdown() 
+        this.openDialog({opponent:"black",type:"checkmate"})
+      }
+
+      else if(gameFinished==="3-fold repetition"){
+        this.stopCountdown() 
+        this.openDialog({opponent:"",type:"draw"})
+      }
+      else if(gameFinished==="stale mate"){
+        this.stopCountdown() 
+        this.openDialog({opponent:"",type:"stale mate"})
+      }
+      else this.startCountdown()
+
       
     })
 
     this.chatservice.onInGameOption().subscribe((option)=>{
-      this.openDialog(option)
+      if(option.type==="resign"){
+          this.stopCountdown()
+          this.openDialog(option)
+
+      }
+        
+      else if(option.type==="accept draw"){
+        this.stopCountdown()
+        this.openDialog({opponent:"",type:"draw"})
+      } 
+      
+      else{
+        this.openDialog(option)
+      }
+
     })
 
     if(this.side===this.turn)
@@ -62,19 +89,30 @@ export class BoardComponent implements OnInit {
       
   }
 
-  openDialog(option:any): void {
+  openDialog(option:any): any{
     let dialogRef=this.dialog.open(DialogComponent,{data:option})
     dialogRef.afterClosed().subscribe(result => {
-      
-      alert(result) 
       console.log(result,"result")
+
+      if(option.type==="offer draw" && result==="accept"){
+        this.stopCountdown() 
+        this.openDialog({opponent:"",type:"draw"})
+        this.chatservice.inGameOption({opponent:"",type:"accept draw"},this.room)
+
+      }
+      return result
+       
+      
     });
   }
 
   sendOption(type:string):void{
     let option={opponent:this.side,type:type}
     this.chatservice.inGameOption(option,this.room)
-
+    if (type==="resign"){
+        this.openDialog(option)
+        this.stopCountdown() 
+    }
   }
 
 
@@ -84,21 +122,28 @@ export class BoardComponent implements OnInit {
       if(Object.keys(moveInfo).length){
 
 
-        console.log("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",this.side)
-        let option={opponent:this.side,type:"pawn promotion"}
-        this.openDialog(option)
+        
+        
 
         this.pauseCountdown()
         
         this.turn=this.turn==="white" ? "black": "white"
 
-        
+        let gameFinished=moveInfo.isGameFinished
 
-        if(moveInfo.isGameFinished==="white won"){
-          this.finished="white won"
-          this.openDialog("white won")
-          
-          
+        if(gameFinished==="white won"){
+          this.openDialog({opponent:"white",type:"checkmate"})
+        }
+        else if(gameFinished==="black won"){
+          this.openDialog({opponent:"black",type:"checkmate"})
+        }
+  
+        else if(gameFinished==="3-fold repetition"){
+          this.openDialog({opponent:"",type:"draw"})
+        }
+        else if(gameFinished==="stale mate"){
+          this.stopCountdown() 
+          this.openDialog({opponent:"",type:"stale mate"})
         }
         this.chatservice.makeMove(moveInfo,this.room)
 
